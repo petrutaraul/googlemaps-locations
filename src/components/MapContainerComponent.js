@@ -12,7 +12,7 @@ export default function MapContainerComponent({
     <MapContainer
       center={location.latlng}
       zoom={13}
-      style={{ height: "90vh", width: "100%" }}
+      className="h-screen w-full"
     >
       <ChangeView center={location.latlng} />
       <TileLayer

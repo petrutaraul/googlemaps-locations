@@ -30,18 +30,22 @@ export default function App() {
   }, []);
 
   return (
-    <div>
+    <div className="flex">
       <MapContainerComponent
         location={location}
         setLocation={setLocation}
         locations={locations}
+        className="flex-1"
       />
-      <AddLocationButton location={location} addLocation={addLocation} />
-      <LocationList
-        locations={locations}
-        setLocations={setLocations}
-        setLocation={setLocation}
-      />
+      <div className="flex flex-col items-center content-center px-10 py-8">
+        <LocationList
+          locations={locations}
+          setLocations={setLocations}
+          setLocation={setLocation}
+          className="w-full"
+        />
+        <AddLocationButton location={location} addLocation={addLocation} />
+      </div>
     </div>
   );
 }

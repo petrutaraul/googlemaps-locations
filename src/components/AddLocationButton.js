@@ -1,21 +1,15 @@
+import { classNames } from "../utils/classNames";
+
 export default function AddLocationButton({ location, addLocation }) {
   return (
     <button
       onClick={() => addLocation()}
       disabled={!location}
-      style={{
-        backgroundColor: location ? "#4CAF50" : "#888",
-        border: "none",
-        color: "white",
-        padding: "15px 32px",
-        textAlign: "center",
-        textDecoration: "none",
-        display: "inline-block",
-        fontSize: "16px",
-        margin: "4px 2px",
-        cursor: "pointer",
-        borderRadius: "12px",
-      }}
+      className={classNames(
+        "inline-block px-8 py-4 mx-1 my-2 text-center text-white rounded-full cursor-pointer text-lg",
+        location ? "bg-blue-500" : "bg-gray-500",
+        !location && "cursor-not-allowed"
+      )}
     >
       ADD
     </button>
