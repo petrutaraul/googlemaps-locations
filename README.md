@@ -1,4 +1,4 @@
-# 🚀 Welcome to our React App! 🚀
+# 🚀 Welcome to GoogleMaps Locations App! 🚀
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
