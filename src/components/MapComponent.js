@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useMapEvents } from "react-leaflet";
 import axios from "axios";
 
 function MapComponent({ setLocation }) {
-  const map = useMapEvents({
+  useMapEvents({
     click: async (e) => {
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`
@@ -15,11 +15,7 @@ function MapComponent({ setLocation }) {
         name: response.data.name,
       };
 
-      console.log(response);
-
       setLocation({ latlng: e.latlng, ...newLocationData });
-
-      console.log(newLocationData);
     },
   });
 }

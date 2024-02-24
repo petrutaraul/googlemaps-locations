@@ -1,5 +1,4 @@
-// App.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapComponent from "./components/MapComponent";
@@ -48,6 +47,18 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    // set location to the first location from the list of locations fi locations is not empty
+    if (locations.length > 0) {
+      setLocation(locations[0]);
+    }
+  }, []);
+
+  useEffect(() => {
+    // save locations to browser's local storage
+    localStorage.setItem("locations", JSON.stringify(locations));
+  }, [locations]);
+
   return (
     <div>
       <MapContainer
@@ -61,7 +72,7 @@ export default function App() {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         <MapComponent setLocation={setLocation} />
-        {location && (
+        {location.name && location.city && (
           <Marker position={location.latlng} icon={customIcon}>
             <Popup>
               <h2>Name: {location.name}</h2>
