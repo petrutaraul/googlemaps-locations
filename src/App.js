@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import MapComponent from "./components/MapComponent";
 import LocationList from "./components/LocationList";
-import L from "leaflet";
+import MapContainerComponent from "./components/MapContainerComponent";
+import AddLocationButton from "./components/AddLocationButton";
+import useLocations from "./hooks/useLocations";
 
 export default function App() {
   const [location, setLocation] = useState({
@@ -14,104 +14,29 @@ export default function App() {
     description: "",
   });
 
-  const [locations, setLocations] = useState(() => {
-    const savedLocations = localStorage.getItem("locations");
-    if (savedLocations) {
-      return JSON.parse(savedLocations);
-    }
-    return [];
-  });
-
-  const customIcon = L.icon({
-    iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-green.png",
-    iconSize: [38, 95], // size of the icon
-    shadowSize: [50, 64], // size of the shadow
-    iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62], // the same for the shadow
-    popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
-  });
-
-  function ChangeView({ center }) {
-    const map = useMap();
-    map.flyTo(center);
-    return null;
-  }
+  const [locations, setLocations] = useLocations();
 
   const addLocation = () => {
     if (location) {
       const newLocations = [...locations, { ...location }];
       setLocations(newLocations);
-
-      // save locations to browser's local storage
-      localStorage.setItem("locations", JSON.stringify(newLocations));
     }
   };
 
   useEffect(() => {
-    // set location to the first location from the list of locations fi locations is not empty
     if (locations.length > 0) {
       setLocation(locations[0]);
     }
   }, []);
 
-  useEffect(() => {
-    // save locations to browser's local storage
-    localStorage.setItem("locations", JSON.stringify(locations));
-  }, [locations]);
-
   return (
     <div>
-      <MapContainer
-        center={location.latlng}
-        zoom={13}
-        style={{ height: "90vh", width: "100%" }}
-      >
-        <ChangeView center={location.latlng} />
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <MapComponent setLocation={setLocation} />
-        {location.name && location.city && (
-          <Marker position={location.latlng} icon={customIcon}>
-            <Popup>
-              <h2>Name: {location.name}</h2>
-              <p>City: {location.city}</p>
-              <p>Country: {location.country} </p>
-            </Popup>
-          </Marker>
-        )}
-        {locations.map((location, index) => (
-          <Marker key={index} position={location.latlng} icon={customIcon}>
-            <Popup>
-              <h2>Name: {location.name}</h2>
-              <p>City: {location.city}</p>
-              <p>Country: {location.country} </p>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-      <button
-        onClick={() => addLocation()}
-        disabled={!location}
-        style={{
-          backgroundColor: location
-            ? "#4CAF50"
-            : "#888" /* Green when location is selected, otherwise gray */,
-          border: "none",
-          color: "white",
-          padding: "15px 32px",
-          textAlign: "center",
-          textDecoration: "none",
-          display: "inline-block",
-          fontSize: "16px",
-          margin: "4px 2px",
-          cursor: "pointer",
-          borderRadius: "12px",
-        }}
-      >
-        ADD
-      </button>
+      <MapContainerComponent
+        location={location}
+        setLocation={setLocation}
+        locations={locations}
+      />
+      <AddLocationButton location={location} addLocation={addLocation} />
       <LocationList
         locations={locations}
         setLocations={setLocations}
