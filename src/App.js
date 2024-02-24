@@ -7,8 +7,21 @@ import LocationList from "./components/LocationList";
 import L from "leaflet";
 
 export default function App() {
-  const [location, setLocation] = useState(null);
-  const [locations, setLocations] = useState([]);
+  const [location, setLocation] = useState({
+    latlng: { lat: 51.505, lng: -0.09 },
+    city: "",
+    country: "",
+    name: "",
+    description: "",
+  });
+
+  const [locations, setLocations] = useState(() => {
+    const savedLocations = localStorage.getItem("locations");
+    if (savedLocations) {
+      return JSON.parse(savedLocations);
+    }
+    return [];
+  });
 
   const customIcon = L.icon({
     iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-green.png",
@@ -25,47 +38,50 @@ export default function App() {
     return null;
   }
 
-  const addLocation = (name, description) => {
+  const addLocation = () => {
     if (location) {
-      const newLocations = [...locations, { ...location, name, description }];
+      const newLocations = [...locations, { ...location }];
       setLocations(newLocations);
+
+      // save locations to browser's local storage
+      localStorage.setItem("locations", JSON.stringify(newLocations));
     }
   };
-
-  const initialLocation = { lat: 51.505, lng: -0.09 };
 
   return (
     <div>
       <MapContainer
-        center={location || initialLocation}
+        center={location.latlng}
         zoom={13}
         style={{ height: "90vh", width: "100%" }}
       >
-        <ChangeView center={location || initialLocation} />
+        <ChangeView center={location.latlng} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         <MapComponent setLocation={setLocation} />
         {location && (
-          <Marker position={location} icon={customIcon}>
+          <Marker position={location.latlng} icon={customIcon}>
             <Popup>
-              <h2>{location.name}</h2>
-              <p>{location.description}</p>
+              <h2>Name: {location.name}</h2>
+              <p>City: {location.city}</p>
+              <p>Country: {location.country} </p>
             </Popup>
           </Marker>
         )}
         {locations.map((location, index) => (
-          <Marker key={index} position={location} icon={customIcon}>
+          <Marker key={index} position={location.latlng} icon={customIcon}>
             <Popup>
-              <h2>{location.name}</h2>
-              <p>{location.description}</p>
+              <h2>Name: {location.name}</h2>
+              <p>City: {location.city}</p>
+              <p>Country: {location.country} </p>
             </Popup>
           </Marker>
         ))}
       </MapContainer>
       <button
-        onClick={() => addLocation("Location Name", "Location Description")}
+        onClick={() => addLocation()}
         disabled={!location}
         style={{
           backgroundColor: location

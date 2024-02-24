@@ -6,7 +6,9 @@ function LocationList({ locations, setLocations, setLocation }) {
       {locations.map((location, index) => (
         <div key={index}>
           <span>
-            Lat: {location.lat}, Lng: {location.lng}
+            <h2>Name: {location.name}</h2>
+            <p>City: {location.city}</p>
+            <p>Country: {location.country} </p>
           </span>
           <button onClick={() => setLocation(location)}>Revisit</button>
           <button
